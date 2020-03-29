@@ -21,7 +21,7 @@ namespace SmartFormat.Tests.Common
 
         #endregion
 
-        #region: Constructors :
+        #region Constructors
 
         public ExceptionCollection() { }
         public ExceptionCollection(TException exception)

@@ -1,82 +1,68 @@
-﻿using System;
-using SmartFormat.Core.Settings;
+﻿
+namespace SmartFormat.Core.Parsing {
 
-namespace SmartFormat.Core.Parsing
-{
-    /// <summary>
-    /// Represents the literal text that is found
-    /// in a parsed format string.
-    /// </summary>
-    public class LiteralText : FormatItem
-    {
-        public LiteralText(SmartSettings smartSettings, Format parent, int startIndex) : base(smartSettings, parent,
-            startIndex)
-        {
-        }
+	using System;
+	using SmartFormat.Core.Settings;
 
-        public LiteralText(SmartSettings smartSettings, Format parent) : base(smartSettings, parent, parent.startIndex)
-        {
-        }
+	/// <summary>
+	/// Represents the literal text that is found
+	/// in a parsed format string.
+	/// </summary>
+	public class LiteralText : FormatItem {
 
-        public override string ToString()
-        {
-            return SmartSettings.ConvertCharacterStringLiterals
-                ? ConvertCharacterLiteralsToUnicode()
-                : baseString.Substring(startIndex, endIndex - startIndex);
-        }
+		public LiteralText(
+			SmartSettings smartSettings,
+			Format parent,
+			int startIndex) :
+			base(smartSettings, parent, startIndex) {
 
-        private string ConvertCharacterLiteralsToUnicode()
-        {
-            var source = baseString.Substring(startIndex, endIndex - startIndex);
+		}
 
-            // No character literal escaping - nothing to do
-            if (source[0] != Parser.CharLiteralEscapeChar)
-                return source;
+		public LiteralText(SmartSettings smartSettings, Format parent) :
+			base(smartSettings, parent, parent.startIndex) {
 
-            // The string length should be 2: espace character \ and literal character
-            if (source.Length < 2) throw new ArgumentException($"Missing escape sequence in literal: \"{source}\"");
+		}
 
-            char c;
-            switch (source[1])
-            {
-                case '\'':
-                    c = '\'';
-                    break;
-                case '\"':
-                    c = '\"';
-                    break;
-                case '\\':
-                    c = '\\';
-                    break;
-                case '0':
-                    c = '\0';
-                    break;
-                case 'a':
-                    c = '\a';
-                    break;
-                case 'b':
-                    c = '\b';
-                    break;
-                case 'f':
-                    c = '\f';
-                    break;
-                case 'n':
-                    c = '\n';
-                    break;
-                case 'r':
-                    c = '\r';
-                    break;
-                case 't':
-                    c = '\t';
-                    break;
-                case 'v':
-                    c = '\v';
-                    break;
-                default:
-                    throw new ArgumentException($"Unrecognized escape sequence in literal: \"{source}\"");
-            }
+		public override string ToString() {
+			return SmartSettings.ConvertCharacterStringLiterals
+				? ConvertCharacterLiteralsToUnicode()
+				: baseString[this.startIndex..this.endIndex];
+		}
 
-            return c.ToString();
-        }
-    }
+		private string ConvertCharacterLiteralsToUnicode() {
+
+			var source = baseString[this.startIndex..this.endIndex];
+
+			// No character literal escaping - nothing to do
+			if (source[0] != Parser.CharLiteralEscapeChar) {
+				return source;
+			}
+
+			// The string length should be 2: espace character \ and literal character
+			if (source.Length < 2) {
+				throw new ArgumentException($"Missing escape sequence in literal: \"{source}\"");
+			}
+
+			var c = (source[1]) switch
+			{
+				'\'' => '\'',
+				'\"' => '\"',
+				'\\' => '\\',
+				'0' => '\0',
+				'a' => '\a',
+				'b' => '\b',
+				'f' => '\f',
+				'n' => '\n',
+				'r' => '\r',
+				't' => '\t',
+				'v' => '\v',
+				_ => throw new ArgumentException($"Unrecognized escape sequence in literal: \"{source}\""),
+			};
+
+			return c.ToString();
+
+		}
+
+	}
+
 }

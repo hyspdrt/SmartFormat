@@ -1,45 +1,32 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <Description>A string composition library written in C# that can format data into a string with a minimal, intuitive syntax. It uses extensions to provide named placeholders, pluralization, gender conjugation, and time and list formatting. Project hosted on GitHub https://github.com/scottrippey/SmartFormat.NET</Description>
-    <Copyright>Copyright 2011-2019 axuno gGmbH, Scott Rippey, Bernhard Millauer and other contributors.</Copyright>
-    <AssemblyTitle>SmartFormat.Test</AssemblyTitle>
-    <Authors>axuno gGmbH, Scott Rippey, Bernhard Millauer and other contributors.</Authors>
-    <Version>2.4.1.0</Version>
-    <TargetFrameworks>netcoreapp2.0;net45</TargetFrameworks>
-    <DefineConstants>$(DefineConstants)</DefineConstants>
-    <GenerateDocumentationFile>false</GenerateDocumentationFile>
-    <AssemblyName>SmartFormat.Tests</AssemblyName>
-    <AssemblyOriginatorKeyFile>../SmartFormat/SmartFormat.snk</AssemblyOriginatorKeyFile>
-    <SignAssembly>true</SignAssembly>
-    <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
-    <PackageId>SmartFormat.Tests</PackageId>
-    <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
-    <RuntimeFrameworkVersion>2.0.0</RuntimeFrameworkVersion>
-    <Company>axuno gGmbH, Scott Rippey, Bernhard Millauer and other contributors.</Company>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>netcoreapp3.1</TargetFramework>
+		<Description>A string composition library written in C# that can format data into a string with a minimal, intuitive syntax. It uses extensions to provide named placeholders, pluralization, gender conjugation, and time and list formatting. Project hosted on GitHub https://github.com/scottrippey/SmartFormat.NET</Description>
+		<Copyright>Copyright 2011-2019 axuno gGmbH, Scott Rippey, Bernhard Millauer and other contributors.</Copyright>
+		<AssemblyTitle>SmartFormat.Test</AssemblyTitle>
+		<Authors>axuno gGmbH, Scott Rippey, Bernhard Millauer and other contributors.</Authors>
+		<Version>2.4.1.0</Version>
+		<AssemblyName>SmartFormat.Tests</AssemblyName>
+		<PackageId>SmartFormat.Tests</PackageId>
+		<Company>axuno gGmbH, Scott Rippey, Bernhard Millauer and other contributors.</Company>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="project.*.json" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
+		<PackageReference Include="NUnit" Version="3.12.0" />
+		<PackageReference Include="NUnit3TestAdapter" Version="3.16.1">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+	</ItemGroup>
 
-  <ItemGroup>
-    <None Remove="packages.config" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\SmartFormat\SmartFormat.csproj" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.CSharp" Version="4.5.0" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
-    <PackageReference Include="NUnit" Version="3.11.0" />
-    <PackageReference Include="NUnit3TestAdapter" Version="3.11.2" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\SmartFormat\SmartFormat.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
-  </ItemGroup>
+	<ItemGroup>
+		<Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
+	</ItemGroup>
 
 </Project>

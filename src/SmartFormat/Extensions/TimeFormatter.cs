@@ -1,121 +1,131 @@
-﻿using System;
-using System.Globalization;
-using SmartFormat.Core.Extensions;
-using SmartFormat.Net.Utilities;
-using SmartFormat.Utilities;
+﻿
+namespace SmartFormat.Extensions {
 
-namespace SmartFormat.Extensions
-{
-    public class TimeFormatter : IFormatter
-    {
-        public string[] Names { get; set; } = {"timespan", "time", "t", ""};
+	using System;
+	using System.Globalization;
+	using SmartFormat.Core.Extensions;
+	using SmartFormat.Net.Utilities;
+	using SmartFormat.Utilities;
 
-        #region Constructors
+	public class TimeFormatter : IFormatter {
 
-        /// <summary>
-        /// Initializes the extension with a default TimeTextInfo.
-        /// </summary>
-        /// <param name="defaultTwoLetterLanguageName">This will be used when no CultureInfo is supplied.  Can be null.</param>
-        public TimeFormatter(string defaultTwoLetterLanguageName)
-        {
-            if (CommonLanguagesTimeTextInfo.GetTimeTextInfo(defaultTwoLetterLanguageName) == null)
-                throw new ArgumentException($"Language '{defaultTwoLetterLanguageName}' for {nameof(defaultTwoLetterLanguageName)} is not implemented.");
+		public string[] Names { get; set; } = { "timespan", "time", "t", "" };
 
-            DefaultTwoLetterISOLanguageName = defaultTwoLetterLanguageName;
-            DefaultFormatOptions = TimeSpanUtility.DefaultFormatOptions;
-        }
+		#region Constructors
 
-        #endregion
+		/// <summary>
+		/// Initializes the extension with a default TimeTextInfo.
+		/// </summary>
+		/// <param name="defaultTwoLetterLanguageName">This will be used when no CultureInfo is supplied.  Can be null.</param>
+		public TimeFormatter(string defaultTwoLetterLanguageName) {
 
-        #region Defaults
+			if (CommonLanguagesTimeTextInfo.GetTimeTextInfo(defaultTwoLetterLanguageName) == null) {
+				throw new ArgumentException($"Language '{defaultTwoLetterLanguageName}' for {nameof(defaultTwoLetterLanguageName)} is not implemented.");
+			}
 
-        /// <summary>
-        /// Determines the options for time formatting.
-        /// </summary>
-        public TimeSpanFormatOptions DefaultFormatOptions { get; set; }
+			DefaultTwoLetterISOLanguageName = defaultTwoLetterLanguageName;
+			DefaultFormatOptions = TimeSpanUtility.DefaultFormatOptions;
 
-        /// <summary>
-        /// The ISO language name, which will be used for getting the <see cref="TimeTextInfo"/>.
-        /// </summary>
-        public string DefaultTwoLetterISOLanguageName { get; set; }
+		}
 
-        #endregion
+		#endregion
 
-        #region IFormatter
+		#region Defaults
 
-        public bool TryEvaluateFormat(IFormattingInfo formattingInfo)
-        {
-            var format = formattingInfo.Format;
-            var current = formattingInfo.CurrentValue;
+		/// <summary>
+		/// Determines the options for time formatting.
+		/// </summary>
+		public TimeSpanFormatOptions DefaultFormatOptions { get; set; }
 
-            if (format != null && format.HasNested) return false;
-            string options;
-            if (formattingInfo.FormatterOptions != "")
-                options = formattingInfo.FormatterOptions;
-            else if (format != null)
-                options = format.GetLiteralText();
-            else
-                options = "";
+		/// <summary>
+		/// The ISO language name, which will be used for getting the <see cref="TimeTextInfo"/>.
+		/// </summary>
+		public string DefaultTwoLetterISOLanguageName { get; set; }
 
-            TimeSpan fromTime;
-            
-            switch (current)
-            {
-                case TimeSpan timeSpan:
-                    fromTime = timeSpan;
-                    break;
-                case DateTime dateTime:
-                    if (formattingInfo.FormatterOptions != "")
-                    {
-                        fromTime = SystemTime.Now().ToUniversalTime().Subtract(dateTime.ToUniversalTime());
-                    }
-                    else
-                    {
-                        return false;
-                    }
-                    break;
-                case DateTimeOffset dateTimeOffset:
-                    if (formattingInfo.FormatterOptions != "")
-                    {
-                        fromTime = SystemTime.OffsetNow().UtcDateTime.Subtract(dateTimeOffset.UtcDateTime);
-                    }
-                    else
-                    {
-                        return false;
-                    }
-                    break;
-                default:
-                    return false;
-            }
+		#endregion
 
-            var timeTextInfo = GetTimeTextInfo(formattingInfo.FormatDetails.Provider);
-            if (timeTextInfo == null) return false;
-            var formattingOptions = TimeSpanFormatOptionsConverter.Parse(options);
-            var timeString = fromTime.ToTimeString(formattingOptions, timeTextInfo);
-            formattingInfo.Write(timeString);
-            return true;
-        }
+		#region IFormatter
 
-        private TimeTextInfo GetTimeTextInfo(IFormatProvider provider)
-        {
-            // Return the default if there is no provider:
-            if (provider == null)
-                return CommonLanguagesTimeTextInfo.GetTimeTextInfo(DefaultTwoLetterISOLanguageName);
-            
-            // See if the provider can give us what we want:
-            var timeTextInfo = (TimeTextInfo) provider.GetFormat(typeof(TimeTextInfo));
-            if (timeTextInfo != null) return timeTextInfo;
+		public bool TryEvaluateFormat(IFormattingInfo formattingInfo) {
 
-            // See if there is a rule for this culture:
-            if (!(provider is CultureInfo cultureInfo))
-                return CommonLanguagesTimeTextInfo.GetTimeTextInfo(DefaultTwoLetterISOLanguageName);
+			var format = formattingInfo.Format;
+			var current = formattingInfo.CurrentValue;
 
-            timeTextInfo = CommonLanguagesTimeTextInfo.GetTimeTextInfo(cultureInfo.TwoLetterISOLanguageName);
-            // If cultureInfo was supplied,
-            // we will always return, even if null:
-            return timeTextInfo;
-        }
+			if (format != null && format.HasNested) {
+				return false;
+			}
 
-        #endregion
-    }
+			var options = formattingInfo.FormatterOptions != "" ?
+				formattingInfo.FormatterOptions :
+				format != null ?
+				format.GetLiteralText() :
+				"";
+
+			TimeSpan fromTime;
+
+			switch (current) {
+				case TimeSpan timeSpan:
+					fromTime = timeSpan;
+					break;
+				case DateTime dateTime:
+					if (formattingInfo.FormatterOptions != "") {
+						fromTime = SystemTime.Now().ToUniversalTime().Subtract(dateTime.ToUniversalTime());
+					} else {
+						return false;
+					}
+					break;
+				case DateTimeOffset dateTimeOffset:
+					if (formattingInfo.FormatterOptions != "") {
+						fromTime = SystemTime.OffsetNow().UtcDateTime.Subtract(dateTimeOffset.UtcDateTime);
+					} else {
+						return false;
+					}
+					break;
+				default:
+					return false;
+			}
+
+			var timeTextInfo = GetTimeTextInfo(formattingInfo.FormatDetails.Provider);
+			if (timeTextInfo == null) {
+				return false;
+			}
+
+			var formattingOptions = TimeSpanFormatOptionsConverter.Parse(options);
+			var timeString = fromTime.ToTimeString(formattingOptions, timeTextInfo);
+			formattingInfo.Write(timeString);
+
+			return true;
+
+		}
+
+		private TimeTextInfo GetTimeTextInfo(IFormatProvider provider) {
+
+			// Return the default if there is no provider:
+			if (provider == null) {
+				return CommonLanguagesTimeTextInfo.GetTimeTextInfo(DefaultTwoLetterISOLanguageName);
+			}
+
+			// See if the provider can give us what we want:
+			var timeTextInfo = (TimeTextInfo)provider.GetFormat(typeof(TimeTextInfo));
+			if (timeTextInfo != null) {
+				return timeTextInfo;
+			}
+
+			// See if there is a rule for this culture:
+			if (!(provider is CultureInfo cultureInfo)) {
+				return CommonLanguagesTimeTextInfo.GetTimeTextInfo(DefaultTwoLetterISOLanguageName);
+			}
+
+			timeTextInfo = CommonLanguagesTimeTextInfo.GetTimeTextInfo(cultureInfo.TwoLetterISOLanguageName);
+
+			// If cultureInfo was supplied,
+			// we will always return, even if null:
+			return timeTextInfo;
+
+		}
+
+		#endregion
+
+	}
+
 }

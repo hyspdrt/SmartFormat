@@ -1,8 +1,11 @@
-﻿namespace SmartFormat.Core.Settings
-{
-    public enum CaseSensitivityType
-    {
-        CaseSensitive,
-        CaseInsensitive
-    }
+﻿namespace SmartFormat.Core.Settings {
+
+	public enum CaseSensitivityType {
+
+		CaseSensitive,
+
+		CaseInsensitive
+
+	}
+
 }

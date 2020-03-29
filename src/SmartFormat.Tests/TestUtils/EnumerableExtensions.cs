@@ -135,7 +135,7 @@ namespace SmartFormat.Tests.Common
 
         #endregion
 
-        #region: Split :
+        #region Split
 
         /// <summary>Splits the enumeration into segments,
         /// each segment containing [count] items, and the last segment containing the remainder.
